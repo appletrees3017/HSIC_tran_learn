@@ -190,7 +190,7 @@ class HSICTestObject(TestObject):
         return lambdax,lambday
     
     
-    @abstractmethod
+    #@abstractmethod 抽象方法不应该有具体代码---
     def compute_kernel_matrix_on_data(self,data_x,data_y):
         if self.kernelX_use_median:
             sigmax = self.kernelX.get_sigma_median_heuristic(data_x)
@@ -248,8 +248,10 @@ class HSICTestObject(TestObject):
             self.kernelY.set_width(float(sigmay))
         Kxz = self.kernelX.kernel(data_x,self.data_z)
         Kzz = self.kernelX.kernel(self.data_z)
-        #R = inv(sqrtm(Kzz))
-        R = inv(sqrtm(Kzz + np.eye(np.shape(Kzz)[0])*10**(-6)))
+        
+        # R = inv(sqrtm(Kzz + np.eye(np.shape(Kzz)[0])*10**(-6)))  # R = inv(sqrtm(Kzz))不稳定
+        L = np.linalg.cholesky(Kzz + 1e-6 * np.eye(Kzz.shape[0])) #使用 Cholesky 分解
+        R = np.linalg.inv(L.T)  # 更稳定的求逆方式
         phix = Kxz.dot(R)
         Kyw = self.kernelY.kernel(data_y,self.data_w)
         Kww = self.kernelY.kernel(self.data_w)
@@ -263,6 +265,7 @@ class HSICTestObject(TestObject):
         pvalue,_=self.compute_pvalue_with_time_tracking(data_x,data_y)
 
         return pvalue
+
 
 
 
