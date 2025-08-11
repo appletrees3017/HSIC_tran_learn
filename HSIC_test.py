@@ -3,7 +3,9 @@ import time
 from scipy.stats import norm as normaldist
 from scipy.linalg import sqrtm
 import numpy as np
-from numpy import fill_diagonal, zeros, shape, mean, sqrt, permutation, inv
+from numpy import fill_diagonal, zeros, shape, mean, sqrt, inv
+#permutation导入修改
+from numpy.random import permutation
 
 from kernel import Kernel
 
@@ -258,4 +260,5 @@ class HSICTestObject(TestObject):
     
     def compute_pvalue(self,data_x=None,data_y=None):
         pvalue,_=self.compute_pvalue_with_time_tracking(data_x,data_y)
+
         return pvalue
