@@ -4,7 +4,7 @@ from scipy.stats import norm as normaldist
 from scipy.linalg import sqrtm
 import numpy as np
 #from numpy import mean, sum, zeros 不符合 PEP8 规范 修改
-from numpy import fill_diagonal, shape, inv
+#from numpy import fill_diagonal, shape, inv
 #permutation导入修改
 from numpy.random import permutation
 
@@ -74,9 +74,9 @@ class HSICTestObject(TestObject):
     
     @staticmethod
     def HSIC_U_statistic(Kx,Ky):
-        m = shape(Kx)[0]
-        fill_diagonal(Kx,0.)
-        fill_diagonal(Ky,0.)
+        m = np.shape(Kx)[0]
+        np.fill_diagonal(Kx,0.)
+        np.fill_diagonal(Ky,0.)
         K = np.dot(Kx,Ky)
         first_term = np.trace(K) / (m * (m - 3.0))
         second_term = np.sum(Kx)*np.sum(Ky)/float(m*(m-3.)*(m-1.)*(m-2.))
@@ -92,7 +92,7 @@ class HSICTestObject(TestObject):
     
     @staticmethod
     def HSIC_U_statistic_rff(phix,phiy):
-        m=shape(phix)[0]
+        m=np.shape(phix)[0]
         phix_c=phix-np.mean(phix,axis=0)
         phiy_c=phiy-np.mean(phiy,axis=0)
         cov_matrix = (phix_c.T).dot(phiy_c)/float(m-1)
@@ -102,7 +102,7 @@ class HSICTestObject(TestObject):
     
     @staticmethod
     def HSIC_V_statistic_rff(phix,phiy):
-        m=shape(phix)[0]
+        m=np.shape(phix)[0]
         phix_c=phix-np.mean(phix,axis=0)
         phiy_c=phiy-np.mean(phiy,axis=0)
         featCov=(phix_c.T).dot(phiy_c)/float(m)
@@ -120,7 +120,7 @@ class HSICTestObject(TestObject):
             Kx, Ky = self.compute_kernel_matrix_on_dataB(data_x,data_y)
         else:
             Kx, Ky = self.compute_kernel_matrix_on_data(data_x,data_y)
-        ny=shape(data_y)[0]
+        ny=np.shape(data_y)[0]
         if unbiased:
             test_statistic = HSICTestObject.HSIC_U_statistic(Kx,Ky)
         else:
@@ -155,7 +155,7 @@ class HSICTestObject(TestObject):
             phix, phiy = self.compute_rff_on_data(data_x,data_y)
         else:
             phix, phiy = self.compute_induced_kernel_matrix_on_data(data_x,data_y)
-        ny=shape(data_y)[0]
+        ny=np.shape(data_y)[0]
         if unbiased:
             test_statistic = HSICTestObject.HSIC_U_statistic_rff(phix,phiy)
         else:
@@ -250,13 +250,15 @@ class HSICTestObject(TestObject):
         Kzz = self.kernelX.kernel(self.data_z)
         
         # R = inv(sqrtm(Kzz + np.eye(np.shape(Kzz)[0])*10**(-6)))  # R = inv(sqrtm(Kzz))不稳定
-        L = np.linalg.cholesky(Kzz + 1e-6 * np.eye(Kzz.shape[0])) #使用 Cholesky 分解
-        R = np.linalg.inv(L.T)  # 更稳定的求逆方式
+        RL = np.linalg.cholesky(Kzz + 1e-6 * np.eye(Kzz.shape[0])) #使用 Cholesky 分解
+        R = np.linalg.inv(RL.T)  # 更稳定的求逆方式
         phix = Kxz.dot(R)
         Kyw = self.kernelY.kernel(data_y,self.data_w)
         Kww = self.kernelY.kernel(self.data_w)
         #S = inv(sqrtm(Kww))
-        S = inv(sqrtm(Kww + np.eye(np.shape(Kww)[0])*10**(-6)))
+        #S = inv(sqrtm(Kww + np.eye(np.shape(Kww)[0])*10**(-6)))
+        SL = np.linalg.cholesky(Kww + 1e-6 * np.eye(Kww.shape[0])) #使用 Cholesky 分解
+        R = np.linalg.inv(SL.T)  # 更稳定的求逆方式
         phiy = Kyw.dot(S)
         return phix, phiy
     
@@ -265,6 +267,7 @@ class HSICTestObject(TestObject):
         pvalue,_=self.compute_pvalue_with_time_tracking(data_x,data_y)
 
         return pvalue
+
 
 
 
