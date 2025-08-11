@@ -1,4 +1,5 @@
-from numpy import mean, sum, zeros, var, sqrt
+#from numpy import mean, sum, zeros, var, sqrt 不符合 PEP8 规范
+import numpy as np
 from scipy.stats import norm
 import time
 
@@ -36,10 +37,10 @@ class HSICBlockTestObject(HSICTestObject):
             sigmay = self.kernelY.get_sigma_median_heuristic(data_y)
             self.kernelY.set_width(float(sigmay))
         num_blocks = int(( self.num_samples ) // self.blocksize)
-        block_statistics = zeros(num_blocks)
-        null_samples = zeros(num_blocks)
-        null_varx = zeros(num_blocks)
-        null_vary = zeros(num_blocks)
+        block_statistics = np.zeros(num_blocks)
+        null_samples = np.zeros(num_blocks)
+        null_varx = np.zeros(num_blocks)
+        null_vary = np.zeros(num_blocks)
         for bb in range(num_blocks):
             if self.streaming:
                 data_xb, data_yb = self.data_generator(self.blocksize, self.blocksize)
@@ -57,20 +58,21 @@ class HSICBlockTestObject(HSICTestObject):
                     self.HSICmethod(data_x=data_xb, data_y=data_yb, unbiased=True, num_shuffles=0, estimate_nullvar=False,isBlockHSIC=True)
             else:
                 raise NotImplementedError()
-        BTest_Statistic = sum(block_statistics) / float(num_blocks)
+        BTest_Statistic = np.sum(block_statistics) / float(num_blocks)
         #print BTest_Statistic
         if self.nullvarmethod == 'permutation':
-            BTest_NullVar = self.blocksize**2*var(null_samples)
+            BTest_NullVar = self.blocksize**2*np.var(null_samples)
         elif self.nullvarmethod == 'direct':
-            overall_varx = mean(null_varx)
-            overall_vary = mean(null_vary)
+            overall_varx = np.mean(null_varx)
+            overall_vary = np.mean(null_vary)
             BTest_NullVar = 2.*overall_varx*overall_vary
         elif self.nullvarmethod == 'across':
-            BTest_NullVar = var(block_statistics)
+            BTest_NullVar = np.var(block_statistics)
         #print BTest_NullVar
-        Z_score = sqrt(self.num_samples*self.blocksize)*BTest_Statistic / sqrt(BTest_NullVar) 
+        Z_score = np.sqrt(self.num_samples*self.blocksize)*BTest_Statistic / sqrt(BTest_NullVar) 
         #print Z_score
         pvalue = norm.sf(Z_score)
         return pvalue, data_generating_time
 
     
+
