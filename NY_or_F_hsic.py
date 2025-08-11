@@ -1,7 +1,7 @@
 from __future__ import division
 import numpy as np
 
-from numpy import eye, shape, exp,median,sqrt,dot, reshape, concatenate, zeros, ones, fill_diagonal   
+#from numpy import eye, shape, exp,median,sqrt,dot, reshape, concatenate, zeros, ones, fill_diagonal   
 from numpy.linalg import norm
 from numpy.random import permutation, randn
 from scipy.spatial.distance import cdist, pdist, squareform 
@@ -54,4 +54,5 @@ class HSICSpectralTestObject(HSICTestObject):
         hsic_statistic, _, _, _, Mx, My, _ = self.HSICmethod(unbiased=self.unbiased,data_x = data_x, data_y = data_y)
         null_samples = self.get_null_samples_with_spectral_approach(Mx, My)
         pvalue = ( 1+ sum( null_samples > self.num_samples*hsic_statistic ) ) / float( 1 + self.num_nullsims )
+
         return pvalue, data_generating_time
