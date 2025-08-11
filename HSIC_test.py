@@ -109,12 +109,12 @@ class HSICTestObject(TestObject):
     
     def HSIC_with_shuffles(self,data_x=None,data_y=None,unbiased=True,num_shuffles=0,
                             estimate_nullvar=False,isBlockHSIC=False):
-        start = time.clock()
+        start = time.perf_counter()
         if data_x is None:
             data_x=self.data_x
         if data_y is None:
             data_y=self.data_y
-        time_passed = time.clock()-start
+        time_passed = time.perf_counter() - start
         if isBlockHSIC:
             Kx, Ky = self.compute_kernel_matrix_on_dataB(data_x,data_y)
         else:
@@ -144,12 +144,12 @@ class HSICTestObject(TestObject):
     
     def HSIC_with_shuffles_rff(self,data_x=None,data_y=None,
                                 unbiased=True,num_shuffles=0,estimate_nullvar=False):
-        start = time.clock()
+        start = time.perf_counter()
         if data_x is None:
             data_x=self.data_x
         if data_y is None:
             data_y=self.data_y
-        time_passed = time.clock()-start
+        time_passed = time.perf_counter() - start
         if self.rff:
             phix, phiy = self.compute_rff_on_data(data_x,data_y)
         else:
@@ -262,3 +262,4 @@ class HSICTestObject(TestObject):
         pvalue,_=self.compute_pvalue_with_time_tracking(data_x,data_y)
 
         return pvalue
+
