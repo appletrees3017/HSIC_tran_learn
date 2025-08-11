@@ -3,7 +3,8 @@ import time
 from scipy.stats import norm as normaldist
 from scipy.linalg import sqrtm
 import numpy as np
-from numpy import fill_diagonal, zeros, shape, mean, sqrt, inv
+#from numpy import mean, sum, zeros 不符合 PEP8 规范 修改
+from numpy import fill_diagonal, shape, inv
 #permutation导入修改
 from numpy.random import permutation
 
@@ -92,8 +93,8 @@ class HSICTestObject(TestObject):
     @staticmethod
     def HSIC_U_statistic_rff(phix,phiy):
         m=shape(phix)[0]
-        phix_c=phix-mean(phix,axis=0)
-        phiy_c=phiy-mean(phiy,axis=0)
+        phix_c=phix-np.mean(phix,axis=0)
+        phiy_c=phiy-np.mean(phiy,axis=0)
         cov_matrix = (phix_c.T).dot(phiy_c)/float(m-1)
         cov_squared = np.square(cov_matrix**2)
         diag_corelation = np.sum(phix_c**2, axis=0) .dot(np.sum(phiy_c**2, axis=0))/float((m-1)*m)
@@ -102,8 +103,8 @@ class HSICTestObject(TestObject):
     @staticmethod
     def HSIC_V_statistic_rff(phix,phiy):
         m=shape(phix)[0]
-        phix_c=phix-mean(phix,axis=0)
-        phiy_c=phiy-mean(phiy,axis=0)
+        phix_c=phix-np.mean(phix,axis=0)
+        phiy_c=phiy-np.mean(phiy,axis=0)
         featCov=(phix_c.T).dot(phiy_c)/float(m)
         return np.linalg.norm(featCov)**2
     
@@ -124,7 +125,7 @@ class HSICTestObject(TestObject):
             test_statistic = HSICTestObject.HSIC_U_statistic(Kx,Ky)
         else:
             test_statistic = HSICTestObject.HSIC_V_statistic(Kx,Ky)
-        null_samples=zeros(num_shuffles)
+        null_samples=np.zeros(num_shuffles)
         for jj in range(num_shuffles):
             pp = permutation(ny)
             Kpp = Ky[pp,:][:,pp]
@@ -159,7 +160,7 @@ class HSICTestObject(TestObject):
             test_statistic = HSICTestObject.HSIC_U_statistic_rff(phix,phiy)
         else:
             test_statistic = HSICTestObject.HSIC_V_statistic_rff(phix,phiy)
-        null_samples=zeros(num_shuffles)
+        null_samples=np.zeros(num_shuffles)
         for jj in range(num_shuffles):
             pp = permutation(ny)
             if unbiased:
@@ -262,5 +263,6 @@ class HSICTestObject(TestObject):
         pvalue,_=self.compute_pvalue_with_time_tracking(data_x,data_y)
 
         return pvalue
+
 
 
