@@ -211,8 +211,8 @@ class HSICTestObject(TestObject):
     
     @abstractmethod
     def compute_rff_on_data(self,data_x,data_y):
-        self.kernelX.rff_generate(self.num_rfx,dim=shape(data_x)[1])
-        self.kernelY.rff_generate(self.num_rfy,dim=shape(data_y)[1])
+        self.kernelX.rff_generate(self.num_rfx,dim=np.shape(data_x)[1])
+        self.kernelY.rff_generate(self.num_rfy,dim=np.shape(data_y)[1])
         if self.kernelX_use_median:
             sigmax = self.kernelX.get_sigma_median_heuristic(data_x)
             self.kernelX.set_width(float(sigmax))
@@ -267,6 +267,7 @@ class HSICTestObject(TestObject):
         pvalue,_=self.compute_pvalue_with_time_tracking(data_x,data_y)
 
         return pvalue
+
 
 
 
