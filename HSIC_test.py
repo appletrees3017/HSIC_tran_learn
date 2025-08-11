@@ -77,7 +77,7 @@ class HSICTestObject(TestObject):
         fill_diagonal(Kx,0.)
         fill_diagonal(Ky,0.)
         K = np.dot(Kx,Ky)
-        first_term = np.trace(K)/float(m*(m-3.))
+        first_term = np.trace(K) / (m * (m - 3.0))
         second_term = np.sum(Kx)*np.sum(Ky)/float(m*(m-3.)*(m-1.)*(m-2.))
         third_term = 2.*np.sum(K)/float(m*(m-3.)*(m-2.))
         return first_term+second_term-third_term
@@ -262,4 +262,5 @@ class HSICTestObject(TestObject):
         pvalue,_=self.compute_pvalue_with_time_tracking(data_x,data_y)
 
         return pvalue
+
 
