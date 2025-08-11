@@ -19,9 +19,9 @@ class HSICBlockTestObject(HSICTestObject):
     def compute_pvalue_with_time_tracking(self,data_x=None,data_y=None):
         if data_x is None and data_y is None:
             if not self.streaming and not self.freeze_data:
-                start = time.clock()
+                start = time.perf_counter()
                 self.generate_data()
-                data_generating_time = time.clock()-start
+                data_generating_time = time.perf_counter() - start
                 data_x = self.data_x
                 data_y = self.data_y
             else:
@@ -72,4 +72,5 @@ class HSICBlockTestObject(HSICTestObject):
         #print Z_score
         pvalue = norm.sf(Z_score)
         return pvalue, data_generating_time
+
     
