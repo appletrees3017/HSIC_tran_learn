@@ -1,7 +1,5 @@
 from abc import abstractmethod
-from numpy import eye, shape, dot, cos, sin, sqrt
-from numpy import reshape, median
-from numpy import concatenate, zeros, ones, fill_diagonal
+from numpy import eye, shape, dot, cos, sin, sqrt, reshape, median, concatenate
 from numpy.random import permutation,randn
 from numpy.linalg import norm   # for norm function
 
@@ -169,9 +167,12 @@ class GaussianKernel(Kernel):
             X = X.todense()
         n=shape(X)[0]
         if n>1000:
-            X=X[permutation(n)[:1000],:]
+            #X=X[permutation(n)[:1000],:] 应使用随机状态对象
+            rng = np.random.default_rng()
+            X = X[rng.permutation(n)[:1000], :]
         dists=squareform(pdist(X, 'euclidean'))
         median_dist=median(dists[dists>0])
         sigma=median_dist/sqrt(2.)
         return sigma
+
     
