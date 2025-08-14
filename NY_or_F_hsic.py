@@ -59,16 +59,16 @@ class HSICPermutationTestObject(HSICTestObject):
 
     def __init__(self, num_samples, data_generator=None, kernelX=None, kernelY=None, kernelX_use_median=False,
                  kernelY_use_median=False, num_rfx=None, num_rfy=None, rff=False,
-                 induce_set=False, num_inducex = None, num_inducey = None, num_shuffles=1000, unbiased=True):
+                 induce_set=False, num_inducex = None, num_inducey = None, num_shuffles=1000, unbiased=True,alpha=0.05):
         HSICTestObject.__init__(self, num_samples, data_generator=data_generator, kernelX=kernelX, kernelY=kernelY, 
                                 kernelX_use_median=kernelX_use_median,kernelY_use_median=kernelY_use_median,
                                 num_rfx=num_rfx, num_rfy=num_rfy, rff=rff,induce_set=induce_set,
                                  num_inducex = num_inducex, num_inducey = num_inducey)
         self.num_shuffles = num_shuffles
         self.unbiased = unbiased
-    
+        self.alpha=alpha
      
-    def compute_pvalue_with_time_tracking(self,data_x=None,data_y=None):
+    def compute_pvalue_with_time_tracking(self,data_x=None,data_y=None,self=slef.alpha):
         if data_x is None and data_y is None:
             if not self.streaming and not self.freeze_data:
                 start = time.clock()
@@ -85,12 +85,13 @@ class HSICPermutationTestObject(HSICTestObject):
                                                                       data_x = data_x, data_y = data_y)
         sort_statistic = np.sort(null_samples)
         ls = len(sort_statistic)
-        thresh_p = sort_statistic[int((1-self.alpha)*ls)+1]
+        thresh_p = sort_statistic[int((1-alpha)*ls)+1]
 
         h0_rejected= hsic_statistic>thresh_p
         return h0_rejected
     
     
+
 
 
 
