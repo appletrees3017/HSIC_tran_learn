@@ -8,7 +8,7 @@ class HSICBlockTestObject(HSICTestObject):
     def __init__(self,num_samples, data_generator=None, kernelX=None, kernelY=None,
                     kernelX_use_median=False,kernelY_use_median=False,
                     rff=False, num_rfx=None, num_rfy=None,
-                    blocksize=50, streaming=False, nullvarmethod='permutation', freeze_data=False):
+                    blocksize=50, streaming=False, nullvarmethod='permutation', freeze_data=False,alpha=0.05):
         HSICTestObject.__init__(self, num_samples, data_generator=data_generator, kernelX=kernelX, kernelY=kernelY, 
                                 kernelX_use_median=kernelX_use_median,kernelY_use_median=kernelY_use_median,
                                     rff=rff, streaming=streaming, num_rfx=num_rfx, num_rfy=num_rfy,
@@ -16,8 +16,9 @@ class HSICBlockTestObject(HSICTestObject):
         self.blocksize = blocksize
         #self.blocksizeY = blocksizeY
         self.nullvarmethod = nullvarmethod
-        
-    def compute_pvalue_with_time_tracking(self,data_x=None,data_y=None):
+        self.alpha=alpha
+                        
+    def compute_pvalue_with_time_tracking(self,data_x=None,data_y=None,alpha=self.alpha):
         if data_x is None and data_y is None:
             if not self.streaming and not self.freeze_data:
                 start = time.perf_counter()
@@ -73,7 +74,8 @@ class HSICBlockTestObject(HSICTestObject):
         Z_score = np.sqrt(self.num_samples*self.blocksize)*BTest_Statistic / sqrt(BTest_NullVar) 
         sort_statistic = np.sort(null_samples)
         ls = len(sort_statistic)
-        thresh_p = sort_statistic[int((1-self.alpha)*ls)+1]
+        thresh_p = sort_statistic[int((1-alpha)*ls)+1]
         #pvalue = norm.sf(Z_score)
         h0_rejected=Z_score>thresh_p
         return h0_rejected
+
