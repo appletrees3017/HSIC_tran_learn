@@ -86,11 +86,13 @@ class HSICPermutationTestObject(HSICTestObject):
         sort_statistic = np.sort(null_samples)
         ls = len(sort_statistic)
         thresh_p = sort_statistic[int((1-alpha)*ls)+1]
-
-        h0_rejected= hsic_statistic>thresh_p
+        pvalue = ( 1+ sum( null_samples > self.num_samples*hsic_statistic ) ) / float( 1 + self.num_nullsims )
+        h0_rejected_thresh= hsic_statistic>thresh_p
+        h0_rejected_p=thresh_p<self.alpha
         return h0_rejected
     
     
+
 
 
 
