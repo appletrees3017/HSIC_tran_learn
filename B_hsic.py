@@ -72,10 +72,8 @@ class HSICBlockTestObject(HSICTestObject):
         #print BTest_NullVar
         ## Z_score 标准化的检验统计量
         Z_score = np.sqrt(self.num_samples*self.blocksize)*BTest_Statistic / sqrt(BTest_NullVar) 
-        sort_statistic = np.sort(null_samples)
-        ls = len(sort_statistic)
-        thresh_p = sort_statistic[int((1-alpha)*ls)+1]
-        #pvalue = norm.sf(Z_score)
-        h0_rejected=Z_score>thresh_p
-        return h0_rejected
+        pvalue = norm.sf(Z_score)
+        h0_rejected=pvalue<self.alpha
+        return BTest_Statistic,h0_rejected
+
 
